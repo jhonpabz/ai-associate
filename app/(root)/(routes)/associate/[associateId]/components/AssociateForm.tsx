@@ -2,6 +2,7 @@
 
 import { Wand2 } from "lucide-react";
 import * as z from "zod";
+import axios from "axios";
 import { Associate, Category } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,6 +29,8 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { PREAMBLE, SEED_CHAT } from "../lib/constants";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 interface IAssociateFormProps {
   initialData: Associate | null;
@@ -38,6 +41,9 @@ export const AssociateForm = ({
   categories,
   initialData,
 }: IAssociateFormProps) => {
+  const router = useRouter();
+  const { toast } = useToast();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
@@ -53,7 +59,26 @@ export const AssociateForm = ({
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    try {
+      if (initialData) {
+        // Update Associate functionality
+        await axios.patch(`/api/associate/${initialData.id}`, values);
+      } else {
+        // Create companion functionality
+        await axios.post("/api/associate", values);
+      }
+      toast({
+        description: "Success.",
+      });
+
+      router.refresh();
+      router.push("/");
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        description: "Something went wrong",
+      });
+    }
   };
 
   return (
