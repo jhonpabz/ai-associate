@@ -35,6 +35,7 @@ export async function PATCH(
     const associate = await prismadb.associate.update({
       where: {
         id: params.associateId,
+        userId: user.id,
       },
       data: {
         categoryId,
