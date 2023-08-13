@@ -19,7 +19,7 @@ export const Associates = ({ data }: IAssociatesProps) => {
         <div className="relative w-60 h-60">
           <Image fill className="grayscale" src="/empty.png" alt="Empty" />
         </div>
-        <p className="">No associates found.</p>
+        <p className="text-sm text-muted-foreground">No associates found.</p>
       </div>
     );
   }
