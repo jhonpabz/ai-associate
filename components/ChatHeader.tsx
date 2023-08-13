@@ -1,13 +1,26 @@
 "use client";
 
+import axios from "axios";
 import { Associate, Message } from "@prisma/client";
 import { useRouter } from "next/navigation";
 
 import { Button } from "./ui/button";
-import { ChevronLeft, MessageSquare, MoreVertical } from "lucide-react";
+import {
+  ChevronLeft,
+  Edit,
+  MessageSquare,
+  MoreVertical,
+  Trash,
+} from "lucide-react";
 import { BotAvatar } from "./BotAvatar";
 import { useUser } from "@clerk/nextjs";
-import { DropdownMenu, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { useToast } from "./ui/use-toast";
 
 interface IChatHeaderProps {
   associate: Associate & {
@@ -20,8 +33,25 @@ interface IChatHeaderProps {
 
 export const ChatHeader = ({ associate }: IChatHeaderProps) => {
   const router = useRouter();
-  const user = useUser();
-  console.log("user: ", user?.user?.id);
+  const { user } = useUser();
+  const { toast } = useToast();
+
+  const onDelete = async () => {
+    try {
+      await axios.delete(`/api/associate/${associate.id}`);
+      toast({
+        description: "Success",
+      });
+
+      router.refresh();
+      router.push("/");
+    } catch (error) {
+      toast({
+        description: "Something went wrong",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="flex w-full justify-between items-center border-b border-primary/10 pb-4">
@@ -43,6 +73,27 @@ export const ChatHeader = ({ associate }: IChatHeaderProps) => {
           </p>
         </div>
       </div>
+      {user?.id === associate.userId && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="secondary" size="icon">
+              <MoreVertical />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              onClick={() => router.push(`/associate/${associate.id}`)}
+            >
+              <Edit className="w-4 h-4 mr-2" />
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={onDelete}>
+              <Trash className="w-4 h-4 mr-2" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
     </div>
   );
 };
