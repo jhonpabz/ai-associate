@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 
 import { ChatHeader } from "@/components/ChatHeader";
 import { ChatForm } from "@/components/ChatForm";
+import { ChatMessages } from "@/components/ChatMessages";
 
 interface IChatClientProps {
   associate: Associate & {
@@ -50,6 +51,11 @@ export const ChatClient = ({ associate }: IChatClientProps) => {
   return (
     <div className="flex flex-col h-full p-4 space-y-2">
       <ChatHeader associate={associate} />
+      <ChatMessages
+        associate={associate}
+        isLoading={isLoading}
+        messages={messages}
+      />
       <ChatForm
         input={input}
         handleInputChange={handleInputChange}
