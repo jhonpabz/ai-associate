@@ -5,6 +5,9 @@ import { useTheme } from "next-themes";
 import { useToast } from "./ui/use-toast";
 import { cn } from "@/lib/utils";
 import { BotAvatar } from "./BotAvatar";
+import { UserAvatar } from "./UserAvatar";
+import { Button } from "./ui/button";
+import { Copy } from "lucide-react";
 
 interface IChatMessage {
   role: "system" | "user";
@@ -48,6 +51,17 @@ export const ChatMessage = ({
           content
         )}
       </div>
+      {role === "user" && <UserAvatar />}
+      {role !== "user" && !isLoading && (
+        <Button
+          onClick={onCopy}
+          className="opacity-0 group-hover:opacity-100 transition"
+          size="icon"
+          variant="ghost"
+        >
+          <Copy className="w-4 h-4" />
+        </Button>
+      )}
     </div>
   );
 };
