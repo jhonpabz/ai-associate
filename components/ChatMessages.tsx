@@ -1,12 +1,12 @@
 "use client";
 
 import { Associate } from "@prisma/client";
-import { ChatMessage } from "./ChatMessage";
+import { ChatMessage, IChatMessageProps } from "./ChatMessage";
 
 interface IChatMessagesProps {
   associate: Associate;
   isLoading: boolean;
-  messages: any[];
+  messages: IChatMessageProps[];
 }
 
 export const ChatMessages = ({

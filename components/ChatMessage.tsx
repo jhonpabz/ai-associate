@@ -9,7 +9,7 @@ import { UserAvatar } from "./UserAvatar";
 import { Button } from "./ui/button";
 import { Copy } from "lucide-react";
 
-interface IChatMessage {
+export interface IChatMessageProps {
   role: "system" | "user";
   content?: string;
   isLoading?: boolean;
@@ -21,7 +21,7 @@ export const ChatMessage = ({
   content,
   isLoading,
   src,
-}: IChatMessage) => {
+}: IChatMessageProps) => {
   const { toast } = useToast();
   const { theme } = useTheme();
 

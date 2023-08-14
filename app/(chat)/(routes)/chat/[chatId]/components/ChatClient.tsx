@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { ChatHeader } from "@/components/ChatHeader";
 import { ChatForm } from "@/components/ChatForm";
 import { ChatMessages } from "@/components/ChatMessages";
+import { IChatMessageProps } from "@/components/ChatMessage";
 
 interface IChatClientProps {
   associate: Associate & {
@@ -20,12 +21,14 @@ interface IChatClientProps {
 
 export const ChatClient = ({ associate }: IChatClientProps) => {
   const router = useRouter();
-  const [messages, setMessages] = useState<any[]>(associate.messages);
+  const [messages, setMessages] = useState<IChatMessageProps[]>(
+    associate.messages
+  );
   const { input, isLoading, handleInputChange, handleSubmit, setInput } =
     useCompletion({
       api: `/api/chat/${associate.id}`,
       onFinish(prompt, completion) {
-        const systemMessage = {
+        const systemMessage: IChatMessageProps = {
           role: "system",
           content: completion,
         };
@@ -38,7 +41,7 @@ export const ChatClient = ({ associate }: IChatClientProps) => {
     });
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-    const userMessage = {
+    const userMessage: IChatMessageProps = {
       role: "system",
       content: input,
     };
