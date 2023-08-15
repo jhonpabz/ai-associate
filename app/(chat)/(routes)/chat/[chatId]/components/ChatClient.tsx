@@ -42,7 +42,7 @@ export const ChatClient = ({ associate }: IChatClientProps) => {
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     const userMessage: IChatMessageProps = {
-      role: "system",
+      role: "user",
       content: input,
     };
 
