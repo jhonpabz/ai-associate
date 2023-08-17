@@ -3,8 +3,8 @@ import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { PineconeClient } from "@pinecone-database/pinecone";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 
-export type CompanionKey = {
-  companionName: string;
+export type AssociateKey = {
+  associateName: string;
   modelName: string;
   userId: string;
 };
@@ -30,7 +30,7 @@ export class MemoryManager {
 
   public async vectorSearch(
     recentChatHistory: string,
-    companionFileName: string
+    associateFileName: string
   ) {
     const pineconeClient = <PineconeClient>this.vectorDBClient;
 
@@ -44,7 +44,7 @@ export class MemoryManager {
     );
 
     const similarDocs = await vectorStore
-      .similaritySearch(recentChatHistory, 3, { fileName: companionFileName })
+      .similaritySearch(recentChatHistory, 3, { fileName: associateFileName })
       .catch((err) => {
         console.log("WARNING: failed to get vector search results.", err);
       });
@@ -59,17 +59,17 @@ export class MemoryManager {
     return MemoryManager.instance;
   }
 
-  private generateRedisCompanionKey(companionKey: CompanionKey): string {
-    return `${companionKey.companionName}-${companionKey.modelName}-${companionKey.userId}`;
+  private generateRedisAssociateKey(associateKey: AssociateKey): string {
+    return `${associateKey.associateName}-${associateKey.modelName}-${associateKey.userId}`;
   }
 
-  public async writeToHistory(text: string, companionKey: CompanionKey) {
-    if (!companionKey || typeof companionKey.userId == "undefined") {
-      console.log("Companion key set incorrectly");
+  public async writeToHistory(text: string, associateKey: AssociateKey) {
+    if (!associateKey || typeof associateKey.userId == "undefined") {
+      console.log("Associate key set incorrectly");
       return "";
     }
 
-    const key = this.generateRedisCompanionKey(companionKey);
+    const key = this.generateRedisAssociateKey(associateKey);
     const result = await this.history.zadd(key, {
       score: Date.now(),
       member: text,
@@ -78,13 +78,13 @@ export class MemoryManager {
     return result;
   }
 
-  public async readLatestHistory(companionKey: CompanionKey): Promise<string> {
-    if (!companionKey || typeof companionKey.userId == "undefined") {
-      console.log("Companion key set incorrectly");
+  public async readLatestHistory(associateKey: AssociateKey): Promise<string> {
+    if (!associateKey || typeof associateKey.userId == "undefined") {
+      console.log("Associate key set incorrectly");
       return "";
     }
 
-    const key = this.generateRedisCompanionKey(companionKey);
+    const key = this.generateRedisAssociateKey(associateKey);
     let result = await this.history.zrange(key, 0, Date.now(), {
       byScore: true,
     });
@@ -97,9 +97,9 @@ export class MemoryManager {
   public async seedChatHistory(
     seedContent: String,
     delimiter: string = "\n",
-    companionKey: CompanionKey
+    associateKey: AssociateKey
   ) {
-    const key = this.generateRedisCompanionKey(companionKey);
+    const key = this.generateRedisAssociateKey(associateKey);
     if (await this.history.exists(key)) {
       console.log("User already has chat history");
       return;
