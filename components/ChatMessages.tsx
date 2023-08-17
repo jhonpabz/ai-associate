@@ -47,7 +47,7 @@ export const ChatMessages = ({
         <ChatMessage
           key={message.content}
           role={message.role}
-          src={message.src}
+          src={associate.src}
           content={message.content}
         />
       ))}
