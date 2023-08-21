@@ -1,7 +1,7 @@
-import { Associates } from "@/components/Associates";
-import { Categories } from "@/components/Categories";
-import { SearchInput } from "@/components/SearchInput";
-import prismadb from "@/lib/prismadb";
+import prismadb from '@/lib/prismadb';
+import { Associates } from '@/components/Associates';
+import { Categories } from '@/components/Categories';
+import { SearchInput } from '@/components/SearchInput';
 
 interface IRootPageProps {
   searchParams: {
@@ -19,7 +19,7 @@ const RootPage = async ({ searchParams }: IRootPageProps) => {
       },
     },
     orderBy: {
-      createdAt: "desc",
+      createdAt: 'desc',
     },
     include: {
       _count: {
